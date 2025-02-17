@@ -22,16 +22,21 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Fix permissions for ZAP
+        run: |
+          mkdir -p ~/.zap
+          chmod -R 777 ~/.zap
+
       - name: Run OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.10.0
         with:
-          target: 'http://example.com'  # Replace with your application's URL
-          fail_action: false  # Set to 'true' if you want to fail on vulnerabilities
-          rules_file_name: '.zap/rules.tsv'  # Optional: Custom rules file
-          cmd_options: '-a'  # Optional: Additional ZAP command-line options
+          target: 'http://example.com'  # Replace with your actual target
+          fail_action: false
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         with:
           name: ZAP Report
           path: report_json.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.ZAP_TOKEN }}
