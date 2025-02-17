@@ -1,0 +1,33 @@
+name: ZAP Security Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  zap_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Start Application (if needed)
+        run: |
+          docker-compose up -d
+          sleep 30  # Wait for the application to start
+
+            - name: Run ZAP Full Scan
+              run: |
+          docker run --rm -v $(pwd):/zap/wrk:rw owasp/zap2docker-stable zap-full-scan.py -t http://localhost:8000 -r full_scan_report.html
+
+
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: ZAP Report
+          path: zap_report.html
