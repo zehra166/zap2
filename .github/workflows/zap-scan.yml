@@ -22,10 +22,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Fix permissions for ZAP
+      - name: Fix permissions for ZAP directory
         run: |
-          mkdir -p ~/.zap
-          chmod -R 777 ~/.zap
+          sudo chmod -R 777 /zap/wrk/
+
 
       - name: Run OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.10.0
