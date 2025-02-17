@@ -1,33 +1,20 @@
-name: ZAP Security Scan
+name: OWASP ZAP Scan 
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: push: 
+    branches: - main pull_request: branches: - main 
 
-jobs:
-  zap_scan:
-    runs-on: ubuntu-latest
+jobs: zap_scan: runs-on: ubuntu-latest steps: - name: Checkout Code uses: actions/checkout@v4 
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Start Application (if needed)
-        run: |
-          docker-compose up -d
-          sleep 30  # Wait for the application to start
-
-            - name: Run ZAP Full Scan
-              run: |
-          docker run --rm -v $(pwd):/zap/wrk:rw owasp/zap2docker-stable zap-full-scan.py -t http://localhost:8000 -r full_scan_report.html
-
-
-      - name: Upload ZAP Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: ZAP Report
-          path: zap_report.html
+ - name: Start ZAP Baseline Scan 
+    uses: zaproxy/action-baseline@v0.10.0 
+    with: 
+      target: 'https://your-app-url.com' 
+      docker_name: 'owasp/zap2docker-stable' 
+      fail_action: false 
+      rules_file_name: '.zap/rules.tsv'  # Optional: Custom rules file 
+ 
+  - name: Upload ZAP Report 
+    uses: actions/upload-artifact@v4
+    with: 
+      name: ZAP-Report 
+      path: report_html.html 
